@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.11"]
 
     steps:
     - uses: actions/checkout@v4
@@ -37,10 +37,11 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest
+        pytest --cov-report=xml:coverage.xml --cov=app
+        cat coverage.xml
 
   sonarqube-scanner: #job 2
-    name: Build and analyze
+    name: SonarQube Scanner..
     runs-on: ubuntu-latest
     
     steps:
@@ -51,6 +52,9 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.python.coverage.reportPaths=coverage.xml
       # If you wish to fail your job when the Quality Gate is red, uncomment the
       # following lines. This would typically be used to fail a deployment.
       - uses: SonarSource/sonarqube-quality-gate-action@v1
