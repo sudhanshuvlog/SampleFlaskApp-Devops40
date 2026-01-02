@@ -7,8 +7,6 @@ pipeline {
             sh 'docker rm -f webos'
             sh 'docker pull rajeshkv10/sampleappdevops40'
             sh 'docker run -dit --name webos -p 90:90 rajeshkv10/sampleappdevops40'
-
-            
         }
         }
         
